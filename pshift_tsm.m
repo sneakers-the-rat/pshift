@@ -7,7 +7,7 @@
 %        Effects, Erlangen, Germany, 2014.
 
 function compare_methods(shift)
-    %shift = 6;
+    shift = 6;
 
     fn = '/home/lab/speech_recordings/Aldis/Aldis_cv_1.wav';
     [audio, fs] = audioread(fn);
@@ -41,27 +41,7 @@ function compare_methods(shift)
 
 
 
-    %% hpTSM
-    params = struct();
 
-    params.hpsWin = win(1024,2);
-    params.hpsAnaHop = 512;
-    params.hpsFilLenHarm = 21;
-    params.hpsFilLenPerc = 21;
-    params.pvWin = win(8192,2);
-    params.pvSynHop = 4096;
-    %params.pvSynHop = 4096;
-    %params.pvWin    = win(params.pvSynHop*2, 2);
-    params.olaSynHop = 2048;
-    params.olaWin = win(params.olaSynHop*2, 2);
-    params.pvFftShift = 1;
-    params.pvRestoreEnergy = 1;
-    
-    
-    [audio_hp, info] = hpTSM(audio_s, shift, params);
-    
-    audio_hp = resample(audio_hp, fs,fs*shift, 8);
-    audiowrite('test_hp_slo.wav', audio_hp, fs, 'BitsPerSample',32)
     
     
     
@@ -72,22 +52,24 @@ function compare_methods(shift)
 
 
     figure;
-    subplot(3,1,1)
-    spectrogram(audio_dn, 2048, 512,2^14, fs, 'yaxis')
+    subplot(2,1,1)
+    spectrogram(audio(fs*10:fs*50), 2048, 512,2^14, fs, 'yaxis')
     ylim([0,8])
     colormap('bone')
 
-    subplot(3,1,2)
-    spectrogram(audio_el, 2048/shift, 512/shift, 2^14, fs, 'yaxis')
-    ylim([0,8*shift])
-    colormap('bone')
+%     subplot(3,1,2)
+%     spectrogram(audio_el, 2048/shift, 512/shift, 2^14, fs, 'yaxis')
+%     ylim([0,8*shift])
+%     colormap('bone')
     
-    subplot(3,1,3)
-    spectrogram(audio_hp, 2048/shift, 512/shift, 2^14, fs, 'yaxis')
-    ylim([0,8*shift])
+    subplot(2,1,2)
+    spectrogram(audio_hp(fs*10:fs*50), 2048, 512, 2^14, fs, 'yaxis')
+    ylim([0,8])
     colormap('bone')
 
 end
+
+
 
 function shift(method, shift)
 

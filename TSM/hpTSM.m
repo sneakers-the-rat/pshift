@@ -150,6 +150,8 @@ parHps.filLenHarm = parameter.hpsFilLenHarm;
 parHps.filLenPerc = parameter.hpsFilLenPerc;
 parHps.maskingMode = 'binary';
 [xHarm,xPerc,sideinfo] = hpSep(x,parHps,sideinfo);
+clear x
+fprintf('\nfinished separation')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % phase vocoder
@@ -161,6 +163,8 @@ parPv.restoreEnergy = parameter.pvRestoreEnergy;
 parPv.fftShift = parameter.pvFftShift;
 parPv.phaseLocking = 1;
 [yHarm,sideinfo] = pvTSM(xHarm,s,parPv,sideinfo);
+clear xHarm
+fprintf('\nfinished phase vocoder')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ola
@@ -169,6 +173,8 @@ parOla.synHop = parameter.olaSynHop;
 parOla.win = parameter.olaWin;
 parOla.tolerance = 0;
 [yPerc,sideinfo] = wsolaTSM(xPerc,s,parOla,sideinfo);
+clear xPerc
+fprintf('\nfinished WSOLA')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % synthesis
@@ -178,9 +184,9 @@ y = yHarm + yPerc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % update sideinfo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-sideinfo.hpTSM.xHarm = xHarm;
-sideinfo.hpTSM.xPerc = xPerc;
-sideinfo.hpTSM.yHarm = yHarm;
-sideinfo.hpTSM.yPerc = yPerc;
+%sideinfo.hpTSM.xHarm = xHarm;
+%sideinfo.hpTSM.xPerc = xPerc;
+%sideinfo.hpTSM.yHarm = yHarm;
+%sideinfo.hpTSM.yPerc = yPerc;
 
 end
