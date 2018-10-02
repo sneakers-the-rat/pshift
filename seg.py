@@ -7,11 +7,6 @@ from PySide import QtCore, QtGui
 
 from pyAudioAnalysis import audioSegmentation as aS
 
-base_dir = '~/speech_recordings'
-fn = '/home/lab/speech_recordings/pshift/Aldis/Aldis_cv_1.wav'
-fs, audio = wavfile.read(fn)
-
-# data_sub = data[0:fs*20]
 def segment_audio(audio, fs, expansion=0.03, plot=False):
 
     segments = aS.silenceRemoval(audio, fs, 0.05, 0.01, smoothWindow=0.05, weight=0.15)
