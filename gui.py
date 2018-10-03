@@ -10,10 +10,6 @@ import numpy as np
 from scipy.io import wavfile
 import pygame
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
-
 from seg import segment_audio
 
 class Label_Segments(QtGui.QMainWindow):
@@ -21,15 +17,8 @@ class Label_Segments(QtGui.QMainWindow):
     vowels = ['a', 'ae', 'e', 'i', 'o', 'u']
     CV = [''.join(cv) for cv in product(consonants, vowels)]
 
-    def __init__(self, audio, fs):
+    def __init__(self):
         super(Label_Segments, self).__init__()
-
-        self.audio = audio
-        self.fs = fs
-        # set central widget
-        #self.widget = QtGui.QWidget()
-        #self.setCentralWidget(self.widget)
-
         self.current_segment = 0
 
         self.init_ui()
@@ -144,9 +133,11 @@ class Label_Segments(QtGui.QMainWindow):
                     file_ind += 1
                     raw_fn = os.path.join(raw_dir, pho, pho + '_' + str(file_ind) + '.wav')
                 # write raw and pshifted
-                wavfile.write(raw_fn, rate=fs, data=self.audio[start_ind:end_ind])
+                wavfile.write(raw_fn, rate=self.fs, data=self.audio[start_ind:end_ind])
                 pshift_fn = raw_fn.replace('raw', 'pshift')
-                wavfile.write(pshift_fn, rate=fs, data=self.pshift[start_ind:end_ind])
+                wavfile.write(pshift_fn, rate=self.fs, data=self.pshift[start_ind:end_ind])
+
+        print('Saved!')
 
 
 
@@ -195,10 +186,12 @@ class Label_Segments(QtGui.QMainWindow):
             self.current_segment -= 1
 
         self.plot()
+        for button in self.button_group.buttons():
+            button.setDown(False)
+
         button_id = self.segments.loc[self.current_segment]['button_id']
         if button_id != 0:
             button = self.button_group.button(button_id)
-
             button.setDown(True)
 
         self.play_sound()
@@ -212,7 +205,7 @@ class Label_Segments(QtGui.QMainWindow):
         end = self.segments.loc[self.current_segment]['end']
 
 
-        window_expand = 0.5
+        window_expand = 1.0
         if start-window_expand<0:
             plot_start = 0.0
         else:
@@ -245,6 +238,8 @@ class Label_Segments(QtGui.QMainWindow):
         elif which == "end":
             self.segments.loc[self.current_segment,'end'] = self.end_line.value()
 
+        self.play_sound()
+
 
 class Audio_Widget(pg.PlotWidget):
     def __init__(self):
@@ -253,12 +248,8 @@ class Audio_Widget(pg.PlotWidget):
 
 
 if __name__ == '__main__':
-    base_dir = '~/speech_recordings'
-    fn = '/home/lab/speech_recordings/pshift/Aldis/Aldis_cv_1.wav'
-    fs, data = wavfile.read(fn)
-    data = data[0:fs*3]
 
     app = QtGui.QApplication(sys.argv)
     app.setStyle('plastique')  # Keeps some GTK errors at bay
-    ex = Label_Segments(data, fs)
+    ex = Label_Segments()
     sys.exit(app.exec_())

@@ -1,9 +1,8 @@
-import os
+
 import numpy as np
-from scipy.io import wavfile
+
 from matplotlib import pyplot as plt
-from itertools import product
-from PySide import QtCore, QtGui
+
 
 from pyAudioAnalysis import audioSegmentation as aS
 
